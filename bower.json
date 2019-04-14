@@ -2,7 +2,7 @@
   "name": "px-spinner",
   "version": "2.3.0",
   "main": [
-    "px-spinner.html"
+    "px-spinner.js"
   ],
   "ignore": [
     "*.enc",
