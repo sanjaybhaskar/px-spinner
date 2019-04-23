@@ -1,13 +1,11 @@
 import '@polymer/polymer/polymer-legacy.js';
 import './css/px-spinner.styles.js';
 
-import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
-import {PxSpinnerBehavior} from './px-spinner-behavior';
-
-Polymer({
-  _template: html`
+class PxSpinner extends PolymerElement {
+  static get template() {
+    return html`
     <style include="px-spinner-styles"></style>
     <template is="dom-if" if="{{!finished}}">
     <template is="dom-if" if="[[_shouldRenderAsSVG(_animatedSVGSupport, disableSvgAnimation)]]">
@@ -19,10 +17,70 @@ Polymer({
     <template is="dom-if" if="[[!_shouldRenderAsSVG(_animatedSVGSupport, disableSvgAnimation)]]">
       <div style$="width: {{size}}px; height: {{size}}px;" class="spinner-container"></div>
     </template>
-  </template>
-  `,
+  </template>`;
+  }
 
-  is: 'px-spinner',
+  static get properties() {
+    return {
+      finished: {
+        type: Boolean,
+        value: false
+      },
+      /**
+      * The size, in pixels, of the spinner.
+      * Refers to the inner dimension of the circle - no units necessary.
+      */
+      size: {
+        type: Number,
+        value: 80,
+        notify: true
+      },
+      /**
+       * If set, disables SVG animations on the spinner.
+       * Set this if you need the spinner to continue animating while the event loop is blocked.
+       */
+      disableSvgAnimation: {
+        type: Boolean,
+        value: false,
+      },
+      
+      _animatedSVGSupport: {
+        type: Boolean,
+        readonly: true,
+        value: function () {
+          return true;
+        }
+      },
 
-  behaviors: [PxSpinnerBehavior]
-});
+
+    }
+  }
+  constructor() {
+    super();
+  }
+
+  /**
+     * Shows the spinner
+     *
+     * @method show
+     */
+  _show() {
+    this.finished = false;
+  };
+
+  /**
+   * Hides the spinner
+   *
+   * @method hide
+   */
+  _hide() {
+    this.finished = true;
+  };
+
+  _shouldRenderAsSVG(_animatedSVGSupport, disableSvgAnimation) {
+    return _animatedSVGSupport && !disableSvgAnimation;
+  }
+}
+
+customElements.define('px-spinner', PxSpinner);
+
